@@ -3,9 +3,13 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoute = require("./routes/shop");
+const error = require("./controller/error");
 
 const app = express();
 // makes it possible to pass html contents from a post request to readable data
+
+// parse application/json
+app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -23,9 +27,6 @@ app.use("/admin", adminRoutes.routes);
 
 app.use(shopRoute);
 
-app.use((req, res, next) => {
-  // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
-  res.status(404).render("404", { pT: "Page not found", path: "./" });
-});
+app.use(error);
 
-app.listen(3000);
+app.listen(3000, () => console.log("ready"));
