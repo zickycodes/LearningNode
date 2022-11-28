@@ -20,9 +20,15 @@ const productsToPage = (req, res, next) => {
     req.body.description,
     req.body.price
   );
-  product.save();
+  product
+    .save()
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   console.log(req.body.title);
-  res.redirect("/");
 };
 
 const getEditProductsPage = (req, res, next) => {

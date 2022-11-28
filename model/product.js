@@ -1,9 +1,8 @@
-const path = require("path");
-const fs = require("fs");
+const db = require("../util/database");
 // const e = require("express");
 // const { json } = require("body-parser");
 
-const dataPath = path.join(__dirname, "..", "data", "products.json");
+// const dataPath = path.join(__dirname, "..", "data", "products.json");
 
 const getDataProduct = (cb) => {
   fs.readFile(dataPath, "utf8", (err, data) => {
@@ -25,26 +24,10 @@ module.exports = class Product {
 
   // check if an id exist when function is called. If it is, take the id and replace its item with the updated, else create a new one and save it
   save() {
-    // this.id = Math.random().toString()
-    // const dataPath = path.join(__dirname, "..", "data", "products.json");
-    // fs.readFile(dataPath, (err, dataContent) => {
-    //   let products = [];
-    //   if (!err) {
-    //     products = JSON.parse(dataContent);
-    //   }
-    //   products.push(this);
-    //   fs.writeFile(dataPath, JSON.stringify(products), (err) => {
-    //     console.log(err);
-    //   });
-    // });
-    // console.log(dataPath);
-    this.id = Math.random().toString();
-    getDataProduct((products) => {
-      products.push(this);
-      fs.writeFile(dataPath, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
-    });
+    return db.execute(
+      "INSERT INTO products(title, price, description, imageUrl) VALUES(?, ?, ?, ?)",
+      [this.title, this.price, this.description, this.imageUrl]
+    );
   }
 
   updateProduct() {
@@ -73,8 +56,8 @@ module.exports = class Product {
     });
   }
 
-  static fetchProduct(cb) {
-    getDataProduct(cb);
+  static fetchProduct() {
+    return db.execute("SELECT * FROM products");
   }
 
   // static findProdById(id, cb) {
@@ -87,11 +70,7 @@ module.exports = class Product {
   //   return cb(prod);
   // }
 
-  static findProdById(id, cb) {
-    getDataProduct((products) => {
-      const prod = products.find((prod) => prod.id === id);
-      // console.log(prod);
-      cb(prod);
-    });
+  static findProdById(id) {
+    return db.execute("SELECT * FROM products WHERE id = (?)", [id]);
   }
 };

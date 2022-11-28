@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 const error = require("./controller/error");
-
+const db = require("./util/database");
 const app = express();
 // makes it possible to pass html contents from a post request to readable data
 
