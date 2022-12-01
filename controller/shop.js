@@ -1,46 +1,82 @@
 // Home page
-const Product = require("../model/product");
+const Product = require("../model/productseq.js");
 
-exports.getIndex = (req, res, next) => {
-  Product.fetchProduct()
-    .then(([rows, fieldData]) => {
-      res.render("shop/index", {
-        prods: rows,
-        pT: "Shop",
-        path: "/",
-      });
-    })
-    .catch((res) => {
-      console.log(res);
-    });
+exports.getIndex = async (req, res, next) => {
+  // Product.fetchProduct()
+  //   .then(([rows, fieldData]) => {
+  //     res.render("shop/index", {
+  //       prods: rows,
+  //       pT: "Shop",
+  //       path: "/",
+  //     });
+  //   })
+  //   .catch((res) => {
+  //     console.log(res);
+  //   });
+  const products = await Product.findAll();
+  res.render("shop/index", {
+    prods: products,
+    pT: "Shop",
+    path: "/",
+  });
+  console.log(products);
+  return products;
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchProduct()
-    .then(([rows, fieldData]) => {
-      res.render("shop/product-list", {
-        prods: rows,
-        pT: "All Products",
-        path: "/products",
-      });
-    })
-    .catch((res) => {
-      console.log(res);
-    });
+exports.getProducts = async (req, res, next) => {
+  // Product.fetchProduct()
+  //   .then(([rows, fieldData]) => {
+  //     res.render("shop/product-list", {
+  //       prods: rows,
+  //       pT: "All Products",
+  //       path: "/products",
+  //     });
+  //   })
+  //   .catch((res) => {
+  //     console.log(res);
+  //   });
+
+  const products = await Product.findAll();
+  res.render("shop/product-list", {
+    prods: products,
+    pT: "Shop",
+    path: "/",
+  });
+  console.log(products);
+  return products;
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = async (req, res, next) => {
   const prodID = req.params.productId;
-  Product.findProdById(prodID)
-    .then((result) => {
-      res.render("shop/product-detail", {
-        product: result[0][0],
-        pT: result[0][0].title,
-        path: "product/" + prodID,
-      });
-      console.log(product);
-    })
-    .catch((err) => console.log(err));
+  const product = await Product.findAll({
+    where: {
+      id: prodID,
+    },
+  });
+
+  res.render("shop/product-detail", {
+    product: product[0],
+    pT: product.title,
+    path: "product/" + prodID,
+  });
+
+  console.log(product[0]);
+  // res.render("shop/product-detail", {
+  //   product: result[0][0],
+  //   pT: result[0][0].title,
+  //   path: "product/" + prodID,
+  // });
+
+  // Product.findProdById(prodID)
+  //   .then((result) => {
+  //     res.render("shop/product-detail", {
+  //       product: result[0][0],
+  //       pT: result[0][0].title,
+  //       path: "product/" + prodID,
+  //     });
+  //     console.log(product);
+  //   })
+  //   .catch((err) => console.log(err));
 
   // console.log(prodID);
   // res.redirect("/");

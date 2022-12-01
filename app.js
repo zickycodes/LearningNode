@@ -4,7 +4,9 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 const error = require("./controller/error");
-const db = require("./util/database");
+const sequelize = require("./util/database");
+const Product = require("./model/productseq");
+
 const app = express();
 // makes it possible to pass html contents from a post request to readable data
 
@@ -28,5 +30,21 @@ app.use("/admin", adminRoutes.routes);
 app.use(shopRoute);
 
 app.use(error);
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("connected to the db");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log("Pushed");
+  })
+  .catch((err) => console.log(err));
 
 app.listen(3000, () => console.log("ready"));

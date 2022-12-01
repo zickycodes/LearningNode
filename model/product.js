@@ -1,8 +1,4 @@
 const db = require("../util/database");
-// const e = require("express");
-// const { json } = require("body-parser");
-
-// const dataPath = path.join(__dirname, "..", "data", "products.json");
 
 const getDataProduct = (cb) => {
   fs.readFile(dataPath, "utf8", (err, data) => {

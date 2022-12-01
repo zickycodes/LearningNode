@@ -9,3 +9,13 @@ const pool = mysql.createPool({
 });
 
 module.exports = pool.promise();
+
+// const Sequelize = require("sequelize");
+
+// const sequelize = new Sequelize("learning_node", "root", "zicky", {
+//   dialect: "mysql",
+//   port: "3306",
+//   host: "127.0.0.1",
+// });
+
+// module.exports = sequelize;

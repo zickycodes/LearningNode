@@ -132,3 +132,118 @@ values("Half of a yellow sun", 45, "Great book on war, love, and family ties", "
     }
   ]
 ]
+
+
+[
+  product {
+    dataValues: {
+      id: 1,
+      title: 'Kettle',
+      price: 45,
+      imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+      description: 'Great book on war, love, and family ties',
+      createdAt: 2022-11-29T14:54:41.000Z,
+      updatedAt: 2022-11-29T14:54:41.000Z
+    },
+    _previousDataValues: {
+      id: 1,
+      title: 'Kettle',
+      price: 45,
+      imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+      description: 'Great book on war, love, and family ties',
+      createdAt: 2022-11-29T14:54:41.000Z,
+      updatedAt: 2022-11-29T14:54:41.000Z
+    },
+    uniqno: 1,
+    _changed: Set(0) {},
+    _options: {
+      isNewRecord: false,
+      _schema: null,
+      _schemaDelimiter: '',
+      raw: true,
+      attributes: [Array]
+    },
+    isNewRecord: false
+  }
+]
+
+Executing (default): SELECT `id`, `title`, `price`, `imageUrl`, `description`, `createdAt`, `updatedAt` FROM `products` AS `product`;
+[
+  product {
+    dataValues: {
+      id: 1,
+      title: 'Kettle',
+      price: 45,
+      imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+      description: 'Great book on war, love, and family ties',
+      createdAt: 2022-11-29T14:54:41.000Z,
+      updatedAt: 2022-11-29T14:54:41.000Z
+    },
+    _previousDataValues: {
+      id: 1,
+      title: 'Kettle',
+      price: 45,
+      imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+      description: 'Great book on war, love, and family ties',
+      createdAt: 2022-11-29T14:54:41.000Z,
+      updatedAt: 2022-11-29T14:54:41.000Z
+    },
+    uniqno: 1,
+    _changed: Set(0) {},
+    _options: {
+      isNewRecord: false,
+      _schema: null,
+      _schemaDelimiter: '',
+      raw: true,
+      attributes: [Array]
+    },
+    isNewRecord: false
+  }
+]
+
+
+
+
+
+
+
+
+
+product {
+  dataValues: {
+    id: 1,
+    title: 'Kettle',
+    price: 45,
+    imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+    description: 'Great book on war, love, and family ties',
+    createdAt: 2022-11-29T14:54:41.000Z,
+    updatedAt: 2022-11-29T14:54:41.000Z
+  },
+  _previousDataValues: {
+    id: 1,
+    title: 'Kettle',
+    price: 45,
+    imageUrl: 'https://c7.alamy.com/comp/2JJAMN8/rosemawle-half-of-a-yellow-sun-2013-2JJAMN8.jpg',
+    description: 'Great book on war, love, and family ties',
+    createdAt: 2022-11-29T14:54:41.000Z,
+    updatedAt: 2022-11-29T14:54:41.000Z
+  },
+  uniqno: 1,
+  _changed: Set(0) {},
+  _options: {
+    isNewRecord: false,
+    _schema: null,
+    _schemaDelimiter: '',
+    raw: true,
+    attributes: [
+      'id',
+      'title',
+      'price',
+      'imageUrl',
+      'description',
+      'createdAt',
+      'updatedAt'
+    ]
+  },
+  isNewRecord: false
+}
