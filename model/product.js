@@ -13,62 +13,47 @@ const getDataProduct = (cb) => {
 };
 
 module.exports = class Product {
-  constructor(prodId, title, imageUrl, description, price) {
+  constructor(prodId, title, imageUrl, description, price, userId) {
     this.id = prodId;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    // this.id = Math.random().toString();
+    this.userId = userId;
   }
 
-  // check if an id exist when function is called. If it is, take the id and replace its item with the updated, else create a new one and save it
-  save() {
-    return db.execute(
-      "INSERT INTO products(title, price, description, imageUrl) VALUES(?, ?, ?, ?)",
-      [this.title, this.price, this.description, this.imageUrl]
+  async save() {
+    const [rows, fields] = await db.query('SHOW TABLES LIKE "products"');
+    console.log("fe", rows);
+    if (rows) {
+      return await db.execute(
+        "INSERT INTO products(title, price, description, imageUrl, user_id ) VALUES(?, ?, ?, ?, ?)",
+        [this.title, this.price, this.description, this.imageUrl, this.userId]
+      );
+    }
+  }
+
+  static async updateProduct(title, price, description, imageUrl, id) {
+    return await db.execute(
+      "UPDATE products SET title = ?, price = ?, description = ?, imageUrl = ? WHERE id = ?",
+      [title, price, description, imageUrl, id]
     );
   }
 
-  updateProduct() {
-    // fetch all products
-    // take out the updated prod
-    // pass into a new object
-    // push to the product list
-    getDataProduct((products) => {
-      const updatedProductsIndex = products.findIndex(
-        (prod) => prod.id === this.id
-      );
-      products.splice(products[updatedProductsIndex], 1, this);
-      fs.writeFile(dataPath, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
-    });
+  static async deleteProduct(id) {
+    // getDataProduct((products) => {
+    //   const deleteProductIndex = products.findIndex((prod) => (prod.id = id));
+    //   products.splice(products[deleteProductIndex], 1);
+    //   fs.writeFile(dataPath, JSON.stringify(products), (err) => {
+    //     console.log(err);
+    //   });
+    // });
+    return await db.execute("DELETE FROM products WHERE id = ?", [id]);
   }
 
-  static deleteProduct(id) {
-    getDataProduct((products) => {
-      const deleteProductIndex = products.findIndex((prod) => (prod.id = id));
-      products.splice(products[deleteProductIndex], 1);
-      fs.writeFile(dataPath, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
-    });
+  static async fetchProduct() {
+    return await db.execute("SELECT * FROM products");
   }
-
-  static fetchProduct() {
-    return db.execute("SELECT * FROM products");
-  }
-
-  // static findProdById(id, cb) {
-  //
-  //   const prod = getDataProduct((products) => {
-  //     console.log(products);
-  //     return products.find((prod) => prod.id === id);
-  //   });
-  //   console.log(prod);
-  //   return cb(prod);
-  // }
 
   static findProdById(id) {
     return db.execute("SELECT * FROM products WHERE id = (?)", [id]);
