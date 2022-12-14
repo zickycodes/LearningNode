@@ -4,8 +4,9 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 const error = require("./controller/error");
-const db = require("./util/database");
 const app = express();
+const mongoConnect = require("./util/database").mongoConnect;
+
 // makes it possible to pass html contents from a post request to readable data
 
 // parse application/json
@@ -29,4 +30,6 @@ app.use(shopRoute);
 
 app.use(error);
 
-app.listen(3000, () => console.log("ready"));
+mongoConnect(() => {
+  app.listen(3000, () => console.log("ready"));
+});

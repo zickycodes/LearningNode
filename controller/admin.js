@@ -14,16 +14,14 @@ const getAddProductsPage = (req, res, next) => {
 // post request
 const productsToPage = async (req, res, next) => {
   // This is hard coded
-  const [user] = await User.findUserId();
-  console.log(user[0]);
-
+  const user = await User.findUserId("6394665517596dae29a606f3");
+  console.log(user);
   const product = new Product(
-    null,
     req.body.title,
     req.body.imageUrl,
     req.body.description,
     req.body.price,
-    user[0].id
+    user[0]._id
   );
   await product.save();
   res.redirect("/");
@@ -35,15 +33,17 @@ const getEditProductsPage = async (req, res, next) => {
   if (!editMode) {
     return res.redirect("/");
   }
-  console.log(editMode);
+  // console.log(editMode);
   const prodId = req.params.productId;
-  const [userId] = await User.findUserId();
-  console.log(userId[0].id);
+  const product = await Product.findProdById(prodId);
+  console.log("eg", product[0]);
+  // const [userId] = await User.findUserId();
+  // console.log(userId[0].id);
 
-  console.log(prodId);
+  // console.log(prodId);
 
-  const [product] = await User.findUserProd(prodId, userId[0].id);
-  console.log(product);
+  // const [product] = await User.findUserProd(prodId, userId[0].id);
+  // console.log(product);
 
   res.render("admin/edit-product", {
     pT: "Edit Products",
@@ -73,16 +73,14 @@ const postEditProduct = async (req, res, next) => {
 const deleteEditProduct = async (req, res, next) => {
   const prodId = req.params.productId;
   await Product.deleteProduct(prodId);
-  // Product.findProdById(prodId, (product) => {
-  //   Cart.deleteProduct(prodId, product.price);
-  // });
 
   res.redirect("/admin/products");
 };
 
 // Home Page
 const productsPage = async (req, res, next) => {
-  const [products, fieldData] = await Product.fetchProduct();
+  const products = await Product.fetchProduct();
+  console.log(products);
   res.render("admin/admin-products", {
     prods: products,
     pT: "My Shop",

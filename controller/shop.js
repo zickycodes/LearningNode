@@ -2,73 +2,79 @@
 const Product = require("../model/product");
 const Cart = require("../model/cart");
 const User = require("../model/user");
+const { ProfilingLevel } = require("mongodb");
 
 exports.getIndex = async (req, res, next) => {
   console.log("fetched");
-  const [rows, fieldData] = await Product.fetchProduct();
+  const products = await Product.fetchProduct();
+  // console.log(products);
   res.render("shop/index", {
-    prods: rows,
+    prods: products,
     pT: "Shop",
     path: "/",
   });
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchProduct()
-    .then(([rows, fieldData]) => {
-      res.render("shop/product-list", {
-        prods: rows,
-        pT: "All Products",
-        path: "/products",
-      });
-    })
-    .catch((res) => {
-      console.log(res);
-    });
+exports.getProducts = async (req, res, next) => {
+  const products = await Product.fetchProduct();
+
+  res.render("shop/product-list", {
+    prods: products,
+    pT: "All Products",
+    path: "/products",
+  });
+
+  // Product.fetchProduct()
+  //   .then(([rows,  => {
+  //  ;
+  //   })
+  //   .catch((res) => {
+  //     console.log(res);
+  //   });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = async (req, res, next) => {
   const prodID = req.params.productId;
-  Product.findProdById(prodID)
-    .then((result) => {
-      res.render("shop/product-detail", {
-        product: result[0][0],
-        pT: result[0][0].title,
-        path: "product/" + prodID,
-      });
-    })
-    .catch((err) => console.log(err));
+  console.log(prodID);
 
-  // console.log(prodID);
-  // res.redirect("/");
+  const product = await Product.findProdById(prodID);
+  console.log("jwf", product[0]);
+
+  res.render("shop/product-detail", {
+    product: product[0],
+    pT: product[0].title,
+    path: "product/" + prodID,
+  });
+
+  // Product.findProdById(prodID)
+  //   .then((product) => {
+  //     console.log(product);
+
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.getCart = async (req, res, next) => {
-  const [row] = await Cart.fetchCount();
-  console.log(row);
+  const cartItems = await User.dispCart();
+  console.log(cartItems);
 
   res.render("shop/cart", {
     path: "/cart",
     pT: "Your Cart",
-    products: row,
+    products: cartItems,
   });
 };
 
 exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
-  const [user] = await User.findUserId();
-  // Product.findProdById(prodId, (product) => {
-  //   Cart.addProduct(prodId, product.price, product.title);
-  // });
-  const [cartId] = await Cart.findUserCartId();
-  console.log(cartId);
+  const user = await User.findUserId("639599583240a65e9c6cef48");
+  const product = await Product.findProdById(prodId);
+  console.log(product);
+  console.log(user[0]);
+  await User.addToCart(product[0], user[0]);
 
-  if (cartId[0].user_id === user[0].id) {
-    await Cart.addCartItem(cartId[0].id, prodId);
-  } else {
-    await Cart.addToCartTable(user[0].id);
-    await Cart.addCartItem(cartId[0].id, prodId);
-  }
   res.redirect("/cart");
 };
 
@@ -81,7 +87,9 @@ exports.getCheckout = (req, res, next) => {
 
 exports.deleteCartItem = async (req, res, next) => {
   const prodId = req.body.productId;
-  await Cart.deleteCartItem(prodId);
+  const user = await User.findUserId("639599583240a65e9c6cef48");
+  await User.deleteCart(user[0], prodId);
+
   res.redirect("/cart");
 };
 
