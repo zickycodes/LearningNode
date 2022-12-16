@@ -35,14 +35,14 @@ module.exports = class Product {
     return await db
       .collection("products")
       .updateOne(
-        { _id: ObjectId(id) },
+        { _id: new ObjectId(id) },
         { $set: { title, imageUrl, description, price } }
       );
   }
 
   static async deleteProduct(id) {
     const db = getDb();
-    return db.collection("products").deleteOne({ _id: ObjectId(id) });
+    return db.collection("products").deleteOne({ _id: new ObjectId(id) });
   }
 
   static async fetchProduct() {
@@ -53,9 +53,8 @@ module.exports = class Product {
 
   static async findProdById(id) {
     const db = getDb();
-    return await db
-      .collection("products")
-      .find({ _id: ObjectId(id) })
-      .toArray();
+    console.log(id);
+    return await db.collection("products").findOne({ _id: new ObjectId(id) });
+    // .toArray();
   }
 };

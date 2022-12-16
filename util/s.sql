@@ -38,3 +38,30 @@ MODIFY COLUMN column_name datatype;
   )
 
 
+-- {
+--   "_id": {
+--     "$oid": "639595703240a65e9c6cef42"
+--   },
+-- "name": "Zicky",
+-- "email": "ezekieluduak2@gmail.com",
+-- "cart": {"items": []}
+-- }
+
+
+
+      <% if (isAuthenticated) { %>
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/admin/add-product' ? 'active' : '' %>"
+          href="/admin/add-product"
+          >Add Product
+        </a>
+      </li>
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/admin/products' ? 'active' : '' %>"
+          href="/admin/products"
+          >Admin Products
+        </a>
+      </li>
+      <% } %>

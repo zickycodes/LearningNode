@@ -3,32 +3,34 @@ const Cart = require("../model/cart");
 const User = require("../model/user");
 
 const getAddProductsPage = (req, res, next) => {
-  console.log("In another middleware!");
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
+  // console.log("In another middleware!");
   res.render("admin/edit-product", {
     pT: "Add Products",
     path: "admin/add-product",
     editing: false,
+    isAuthenticated: req.session.isLoggedIn ? true : false,
   });
 };
 
 // post request
 const productsToPage = async (req, res, next) => {
   // This is hard coded
-  const user = await User.findUserId("6394665517596dae29a606f3");
-  console.log(user);
+  // const user = await User.findUserId("6394665517596dae29a606f3");
+  // console.log(user);
+  console.log("tdf", req.session.user._id);
   const product = new Product(
     req.body.title,
     req.body.imageUrl,
     req.body.description,
     req.body.price,
-    user[0]._id
+    req.session.user._id
   );
   await product.save();
   res.redirect("/");
 };
 
 const getEditProductsPage = async (req, res, next) => {
-  console.log("In another middleware!");
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect("/");
@@ -36,7 +38,8 @@ const getEditProductsPage = async (req, res, next) => {
   // console.log(editMode);
   const prodId = req.params.productId;
   const product = await Product.findProdById(prodId);
-  console.log("eg", product[0]);
+
+  // console.log("eg", product[0]);
   // const [userId] = await User.findUserId();
   // console.log(userId[0].id);
 
@@ -50,6 +53,7 @@ const getEditProductsPage = async (req, res, next) => {
     path: "admin/edit-product",
     editing: editMode,
     product: product[0],
+    isAuthenticated: req.session.isLoggedIn ? true : false,
   });
 };
 
@@ -80,11 +84,12 @@ const deleteEditProduct = async (req, res, next) => {
 // Home Page
 const productsPage = async (req, res, next) => {
   const products = await Product.fetchProduct();
-  console.log(products);
+
   res.render("admin/admin-products", {
     prods: products,
     pT: "My Shop",
     path: "/",
+    isAuthenticated: req.session.isLoggedIn ? true : false,
   });
 };
 

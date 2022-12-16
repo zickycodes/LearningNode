@@ -6,22 +6,29 @@ const { ProfilingLevel } = require("mongodb");
 
 exports.getIndex = async (req, res, next) => {
   console.log("fetched");
+  // const isLoggedIn = req.get("Cookie").split(";")[1].trim().split("=")[1];
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
+  // console.log("fg", isLoggedIn);
   const products = await Product.fetchProduct();
   // console.log(products);
   res.render("shop/index", {
     prods: products,
     pT: "Shop",
     path: "/",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.getProducts = async (req, res, next) => {
   const products = await Product.fetchProduct();
-
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
+  // console.log("fgi", isLoggedIn);
+  console.log("pr", products);
   res.render("shop/product-list", {
     prods: products,
     pT: "All Products",
     path: "/products",
+    isAuthenticated: req.session.isLoggedIn,
   });
 
   // Product.fetchProduct()
@@ -35,15 +42,22 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodID = req.params.productId;
-  console.log(prodID);
-
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
   const product = await Product.findProdById(prodID);
-  console.log("jwf", product[0]);
+  let loggedIn = req.session.isLoggedIn;
+  console.log("running");
+  // return res.redirect("/");
 
-  res.render("shop/product-detail", {
-    product: product[0],
-    pT: product[0].title,
+  // return res.render("shop/product-detail", {
+  //   product: product,
+  //   pT: product.title,
+  //   path: "product/" + prodID,
+  // });
+  return res.render("shop/product-detail", {
     path: "product/" + prodID,
+    product: product,
+    pT: "title",
+    isAuthenticated: false,
   });
 
   // Product.findProdById(prodID)
@@ -58,37 +72,41 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   const cartItems = await User.dispCart();
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
   console.log(cartItems);
 
   res.render("shop/cart", {
     path: "/cart",
     pT: "Your Cart",
     products: cartItems,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
 exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
-  const user = await User.findUserId("639599583240a65e9c6cef48");
+  // const user = await User.findUserId("639599583240a65e9c6cef48");
   const product = await Product.findProdById(prodId);
   console.log(product);
-  console.log(user[0]);
-  await User.addToCart(product[0], user[0]);
+  console.log(req.user);
+  await User.addToCart(product[0], req.session.user);
 
   res.redirect("/cart");
 };
 
 exports.getCheckout = (req, res, next) => {
+  // const isLoggedIn = req.get("Cookie").split("=")[1];
   res.render("shop/checkout", {
     path: "/checkout",
     pageTitle: "Checkout",
+    // isAuthenticated: isLoggedIn,
   });
 };
 
 exports.deleteCartItem = async (req, res, next) => {
   const prodId = req.body.productId;
-  const user = await User.findUserId("639599583240a65e9c6cef48");
-  await User.deleteCart(user[0], prodId);
+  // const user = await User.findUserId("639599583240a65e9c6cef48");
+  await User.deleteCart(req.session.user, prodId);
 
   res.redirect("/cart");
 };
