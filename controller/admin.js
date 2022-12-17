@@ -18,16 +18,20 @@ const productsToPage = async (req, res, next) => {
   // This is hard coded
   // const user = await User.findUserId("6394665517596dae29a606f3");
   // console.log(user);
-  console.log("tdf", req.session.user._id);
-  const product = new Product(
-    req.body.title,
-    req.body.imageUrl,
-    req.body.description,
-    req.body.price,
-    req.session.user._id
-  );
-  await product.save();
-  res.redirect("/");
+  console.log("tdf", req.session.user);
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    const product = new Product(
+      req.body.title,
+      req.body.imageUrl,
+      req.body.description,
+      req.body.price,
+      req.session.user._id
+    );
+    await product.save();
+    res.redirect("/");
+  }
 };
 
 const getEditProductsPage = async (req, res, next) => {

@@ -87,9 +87,9 @@ exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
   // const user = await User.findUserId("639599583240a65e9c6cef48");
   const product = await Product.findProdById(prodId);
-  console.log(product);
+  console.log("product", product);
   console.log(req.user);
-  await User.addToCart(product[0], req.session.user);
+  await User.addToCart(product, req.session.user);
 
   res.redirect("/cart");
 };
