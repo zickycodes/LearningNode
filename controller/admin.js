@@ -41,7 +41,9 @@ const getEditProductsPage = async (req, res, next) => {
   }
   // console.log(editMode);
   const prodId = req.params.productId;
+  console.log(prodId);
   const product = await Product.findProdById(prodId);
+  console.log(product);
 
   // console.log("eg", product[0]);
   // const [userId] = await User.findUserId();
@@ -56,7 +58,7 @@ const getEditProductsPage = async (req, res, next) => {
     pT: "Edit Products",
     path: "admin/edit-product",
     editing: editMode,
-    product: product[0],
+    product: product,
     isAuthenticated: req.session.isLoggedIn ? true : false,
   });
 };
@@ -73,21 +75,30 @@ const postEditProduct = async (req, res, next) => {
   //     id: productId,
   //   },
   // })
-
-  await Product.updateProduct(title, price, description, imageUrl, productId);
-  res.redirect("/admin/products");
+  const product = await Product.findProdById(productId);
+  console.log("adminprid", product);
+  if (product.userId.toString() !== req.session.user._id.toString()) {
+    return res.redirect("/admin/products");
+  } else {
+    await Product.updateProduct(title, price, description, imageUrl, productId);
+    res.redirect("/admin/products");
+  }
 };
 
 const deleteEditProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-  await Product.deleteProduct(prodId);
-
-  res.redirect("/admin/products");
+  const product = await Product.findProdById(prodId);
+  if (product.userId.toString() !== req.session.user._id.toString()) {
+    return res.redirect("/admin/products");
+  } else {
+    await Product.deleteProduct(prodId);
+    res.redirect("/admin/products");
+  }
 };
 
 // Home Page
 const productsPage = async (req, res, next) => {
-  const products = await Product.fetchProduct();
+  const products = await Product.fetchUserProduct(req.session.user._id);
 
   res.render("admin/admin-products", {
     prods: products,

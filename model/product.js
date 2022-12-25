@@ -45,10 +45,15 @@ module.exports = class Product {
     return db.collection("products").deleteOne({ _id: new ObjectId(id) });
   }
 
-  static async fetchProduct() {
+  static async fetchAllProducts() {
+    const db = getDb();
+    return await db.collection("products").find().toArray();
+  }
+
+  static async fetchUserProduct(userId) {
     const db = getDb();
     // return await db.collection("products").find({});
-    return await db.collection("products").find().toArray();
+    return await db.collection("products").find({ userId }).toArray();
   }
 
   static async findProdById(id) {

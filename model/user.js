@@ -2,12 +2,48 @@ const getDb = require("../util/database").getDb;
 const { ObjectId } = require("mongodb");
 
 module.exports = class User {
+  static async save({ email, password, cart, resetToken, resetTokenExpire }) {
+    const db = getDb();
+    return await db
+      .collection("users")
+      .insertOne({ email, password, cart, resetToken, resetTokenExpire });
+  }
+
   static async findUserId(id) {
     const db = getDb();
     return await db
       .collection("users")
       .find({ _id: ObjectId(id) })
       .toArray();
+  }
+
+  static async findUserByEmail(email) {
+    const db = getDb();
+    return await db.collection("users").findOne({ email: email });
+  }
+
+  static async findByToken({ resetToken }) {
+    const db = getDb();
+    return await db
+      .collection("users")
+      .findOne({ resetToken, resetTokenExpire: { $gt: Date.now() } });
+  }
+
+  static async upddateUserToken({ email, resetToken, resetTokenExpire }) {
+    const db = getDb();
+    return await db
+      .collection("users")
+      .updateOne({ email }, { $set: { resetToken, resetTokenExpire } });
+  }
+
+  static async updateUserPassword(password, email) {
+    const db = getDb();
+    return await db
+      .collection("users")
+      .updateOne(
+        { email },
+        { $set: { password, resetToken: null, resetTokenExpire: null } }
+      );
   }
 
   static async addToCart(product, user) {
@@ -31,6 +67,7 @@ module.exports = class User {
         quantity: 1,
       });
     }
+    // 08024575726
 
     const db = getDb();
     return await db
@@ -38,11 +75,9 @@ module.exports = class User {
       .updateOne({ _id: ObjectId(user._id) }, { $set: { cart: user.cart } });
   }
 
-  static async dispCart() {
+  static async dispCart(userId) {
     const db = getDb();
-    const userCart = await db
-      .collection("users")
-      .findOne({ _id: ObjectId("639599583240a65e9c6cef48") });
+    const userCart = await db.collection("users").findOne({ _id: userId });
     console.log("us", userCart);
     const cartItems = userCart.cart.items;
     return cartItems;

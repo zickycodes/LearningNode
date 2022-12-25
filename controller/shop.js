@@ -9,7 +9,8 @@ exports.getIndex = async (req, res, next) => {
   // const isLoggedIn = req.get("Cookie").split(";")[1].trim().split("=")[1];
   // const isLoggedIn = req.get("Cookie").split("=")[1];
   // console.log("fg", isLoggedIn);
-  const products = await Product.fetchProduct();
+  const products = await Product.fetchAllProducts();
+  console.log("index", products);
   // console.log(products);
   res.render("shop/index", {
     prods: products,
@@ -20,7 +21,7 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getProducts = async (req, res, next) => {
-  const products = await Product.fetchProduct();
+  const products = await Product.fetchAllProducts();
   // const isLoggedIn = req.get("Cookie").split("=")[1];
   // console.log("fgi", isLoggedIn);
   console.log("pr", products);
@@ -57,7 +58,7 @@ exports.getProduct = async (req, res, next) => {
     path: "product/" + prodID,
     product: product,
     pT: "title",
-    isAuthenticated: false,
+    // isAuthenticated: false,
   });
 
   // Product.findProdById(prodID)
@@ -71,9 +72,10 @@ exports.getProduct = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
-  const cartItems = await User.dispCart();
+  console.log(req.session.user._id);
+  const cartItems = await User.dispCart(req.session.user._id);
   // const isLoggedIn = req.get("Cookie").split("=")[1];
-  console.log(cartItems);
+  console.log("chppba", cartItems);
 
   res.render("shop/cart", {
     path: "/cart",
