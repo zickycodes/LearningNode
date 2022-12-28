@@ -85,6 +85,16 @@ app.use(shopRoute);
 
 app.use(error);
 
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render(...);
+  // res.redirect('/500');
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
+  });
+});
+
 mongoConnect(() => {
   app.listen(3000, () => console.log("ready"));
 });
